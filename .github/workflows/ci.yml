@@ -2,7 +2,7 @@ name: Lint and Test
 
 on:
   push:
-    branches: [main]
+    branches: ["*"]  # Allow workflow to run for all branches
   pull_request:
     branches: [main]
 
@@ -14,7 +14,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22  
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - run: npm install
       - run: npm run lint
